@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --secondary: #ff00ff;
+            --bg-dark: #0a0a0f;
+            --bg-card: #1a1a2e;
+            --text: #ffffff;
+            --text-dim: #8e8ea0;
+            --glow: rgba(0, 255, 204, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 204, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .avatar-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .avatar-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 0 50px var(--glow);
+            animation: float 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar.listening {
+            animation: float 3s ease-in-out infinite, listenPulse 0.8s ease-in-out infinite;
+        }
+
+        .avatar.speaking {
+            animation: float 3s ease-in-out infinite, speakPulse 0.3s ease-in-out infinite;
+        }
+
+        .avatar-face {
+            font-size: 100px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .status-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .chat-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+            min-height: 500px;
+        }
+
+        .chat-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease-out;
+            max-width: 85%;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2), rgba(0, 255, 204, 0.1));
+            margin-left: auto;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+        }
+
+        .message.assistant {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(255, 0, 255, 0.1));
+            margin-right: auto;
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+
+        .message-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px 30px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--primary);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button.listening {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            animation: btnPulse 0.8s ease-in-out infinite;
+        }
+
+        button.listening::before {
+            background: var(--secondary);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 204, 0.3);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-dim);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes listenPulse {
+            0%, 100% {
+                box-shadow: 0 0 50px var(--glow);
+            }
+            50% {
+                box-shadow: 0 0 80px var(--glow), 0 0 100px var(--glow);
+            }
+        }
+
+        @keyframes speakPulse {
+            0%, 100% {
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                transform: scale(1.05) translateY(-5px);
+            }
+        }
+
+        @keyframes btnPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px var(--glow);
+            }
+            50% {
+                box-shadow: 0 0 40px var(--glow);
+            }
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AVATAR ASSISTANT</h1>
+            <p class="subtitle">AI-Powered Voice Interface</p>
+        </header>
+
+        <div class="main-content">
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <div class="avatar" id="avatar">
+                        <div class="avatar-face">🤖</div>
+                    </div>
+                </div>
+                <div class="status-text" id="statusText">Ready</div>
+            </div>
+
+            <div class="chat-section">
+                <div class="chat-header">Conversation</div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message assistant">
+                        <div class="message-label">Assistant</div>
+                        <div>Hello! I'm your AI avatar assistant. Click "Start Listening" to speak with me, or type a message below.</div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button id="listenBtn" onclick="toggleListening()">
+                        <span id="listenBtnText">Start Listening</span>
+                    </button>
+                    <button id="stopSpeakBtn" onclick="stopSpeaking()" style="display: none;">
+                        <span>Stop Speaking</span>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="textInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendTextMessage()" style="min-width: 80px;">
+                        <span>Send</span>
+                    </button>
+                </div>
+                <div id="errorContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let recognition = null;
+        let synthesis = window.speechSynthesis;
+        let isListening = false;
+        let isSpeaking = false;
+
+        // Initialize speech recognition
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = function() {
+                    updateStatus('Listening...', 'listening');
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    addMessage('user', transcript);
+                    processMessage(transcript);
+                };
+
+                recognition.onerror = function(event) {
+                    showError(`Speech recognition error: ${event.error}`);
+                    stopListening();
+                };
+
+                recognition.onend = function() {
+                    if (isListening) {
+                        recognition.start(); // Restart if still in listening mode
+                    } else {
+                        updateStatus('Ready', 'idle');
+                    }
+                };
+            } else {
+                showError('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+            }
+        }
+
+        function toggleListening() {
+            if (!recognition) {
+                initSpeechRecognition();
+                if (!recognition) return;
+            }
+
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        function startListening() {
+            try {
+                isListening = true;
+                recognition.start();
+                document.getElementById('listenBtn').classList.add('listening');
+                document.getElementById('listenBtnText').textContent = 'Stop Listening';
+            } catch (error) {
+                showError('Could not start listening: ' + error.message);
+                isListening = false;
+            }
+        }
+
+        function stopListening() {
+            isListening = false;
+            if (recognition) {
+                recognition.stop();
+            }
+            document.getElementById('listenBtn').classList.remove('listening');
+            document.getElementById('listenBtnText').textContent = 'Start Listening';
+            updateStatus('Ready', 'idle');
+        }
+
+        function updateStatus(text, state) {
+            const statusText = document.getElementById('statusText');
+            const avatar = document.getElementById('avatar');
+            
+            statusText.textContent = text;
+            avatar.className = 'avatar';
+            
+            if (state === 'listening') {
+                avatar.classList.add('listening');
+            } else if (state === 'speaking') {
+                avatar.classList.add('speaking');
+            }
+        }
+
+        function addMessage(role, content) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const label = document.createElement('div');
+            label.className = 'message-label';
+            label.textContent = role === 'user' ? 'You' : 'Assistant';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.textContent = content;
+            
+            messageDiv.appendChild(label);
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        async function processMessage(message) {
+            updateStatus('Thinking...', 'idle');
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `API request failed: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const assistantMessage = data.message;
+                
+                addMessage('assistant', assistantMessage);
+                speak(assistantMessage);
+            } catch (error) {
+                showError('Error communicating with AI: ' + error.message);
+                addMessage('assistant', "I'm having trouble connecting right now. Please try again.");
+                updateStatus('Ready', 'idle');
+            }
+        }
+
+        function speak(text) {
+            if (synthesis.speaking) {
+                synthesis.cancel();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            utterance.onstart = function() {
+                isSpeaking = true;
+                updateStatus('Speaking...', 'speaking');
+                document.getElementById('stopSpeakBtn').style.display = 'block';
+            };
+
+            utterance.onend = function() {
+                isSpeaking = false;
+                updateStatus('Ready', 'idle');
+                document.getElementById('stopSpeakBtn').style.display = 'none';
+            };
+
+            utterance.onerror = function(event) {
+                showError('Speech synthesis error: ' + event.error);
+                isSpeaking = false;
+                updateStatus('Ready', 'idle');
+                document.getElementById('stopSpeakBtn').style.display = 'none';
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function stopSpeaking() {
+            if (synthesis.speaking) {
+                synthesis.cancel();
+            }
+            isSpeaking = false;
+            updateStatus('Ready', 'idle');
+            document.getElementById('stopSpeakBtn').style.display = 'none';
+        }
+
+        function sendTextMessage() {
+            const input = document.getElementById('textInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage('user', message);
+                processMessage(message);
+                input.value = '';
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendTextMessage();
+            }
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorContainer.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initSpeechRecognition();
+        });
+    </script>
+</body>
+</html>
