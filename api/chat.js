@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Unexpected response format from Gemini API' });
     }
     
-    const assistantMessage = data.candidates[0].content.parts[0].text;
+    const assistantMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
     
     return res.status(200).json({ message: assistantMessage });
   } catch (error) {
