@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
     // Call Gemini API
     const response = await fetch(
-    https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.AVITAR_KEY},
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.AVITAR_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -46,12 +46,19 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const error = await response.text();
+      console.error('Gemini API error:', error);
       return res.status(response.status).json({ error: `Gemini API error: ${error}` });
     }
 
     const data = await response.json();
+    console.log('Gemini API response:', JSON.stringify(data));
     
     // Extract the response text
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      console.error('Unexpected response structure:', data);
+      return res.status(500).json({ error: 'Unexpected response format from Gemini API' });
+    }
+    
     const assistantMessage = data.candidates[0].content.parts[0].text;
     
     return res.status(200).json({ message: assistantMessage });
