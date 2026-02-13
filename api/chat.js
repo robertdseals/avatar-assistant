@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+  export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
     // Call Gemini API
     const response = await fetch(
-      https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${process.env.AVITAR_KEY},
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.AVITAR_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -50,8 +50,19 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: `Gemini API error: ${error}` });
     }
 
-    const data = await response.json();
-    console.log('Gemini API response:', JSON.stringify(data));
+    let data;
+    const rawResponse = await response.text();
+    console.log('Raw Gemini API response:', rawResponse);
+    
+    try {
+      data = JSON.parse(rawResponse);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      console.error('Raw response was:', rawResponse);
+      return res.status(500).json({ error: `Failed to parse API response: ${parseError.message}` });
+    }
+    
+    console.log('Parsed Gemini API response:', JSON.stringify(data));
     
     // Extract the response text
     if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
@@ -59,11 +70,11 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Unexpected response format from Gemini API' });
     }
     
-    const assistantMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+    const assistantMessage = data.candidates[0].content.parts[0].text;
     
     return res.status(200).json({ message: assistantMessage });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Internal server error', details: error.message });
   }
-}   
+}
