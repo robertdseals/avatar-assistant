@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
 
     // Call Gemini API
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro:generateContent?key=${process.env.AVITAR_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${process.env.AVITAR_KEY}`,
       {
         method: 'POST',
         headers: {
