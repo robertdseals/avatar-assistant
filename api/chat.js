@@ -26,9 +26,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Call Gemini API
+    // Updated URL to use gemini-1.5-flash for Tier 1
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${process.env.AVITAR_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.AVITAR_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -50,23 +50,10 @@ module.exports = async function handler(req, res) {
       return res.status(response.status).json({ error: `Gemini API error: ${error}` });
     }
 
-    let data;
-    const rawResponse = await response.text();
-    console.log('Raw Gemini API response:', rawResponse);
-    
-    try {
-      data = JSON.parse(rawResponse);
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      console.error('Raw response was:', rawResponse);
-      return res.status(500).json({ error: `Failed to parse API response: ${parseError.message}` });
-    }
-    
-    console.log('Parsed Gemini API response:', JSON.stringify(data));
+    const data = await response.json();
     
     // Extract the response text
     if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-      console.error('Unexpected response structure:', data);
       return res.status(500).json({ error: 'Unexpected response format from Gemini API' });
     }
     
