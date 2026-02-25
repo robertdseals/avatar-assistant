@@ -13,16 +13,21 @@ module.exports = async function handler(req, res) {
   try {
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: 'Message is required' });
-    // Use v1beta with gemini-1.5-flash for the most stable Tier 1 access
-   // Current stable endpoint for Tier 1 in February 2026
-const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${process.env.AVITAR_KEY}`;
+    
+    // Tier 1 endpoint with Google Search grounding for current information
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${process.env.AVITAR_KEY}`;
+    
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: message }] }]
+        contents: [{ parts: [{ text: message }] }],
+        tools: [{
+          googleSearch: {}
+        }]
       })
     });
+    
     const data = await response.json();
     if (!response.ok) {
       console.error('Gemini API Error details:', JSON.stringify(data));
