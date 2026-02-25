@@ -113,20 +113,31 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                min-height: 250px;
-                padding: 20px;
+                min-height: 180px;
+                padding: 15px;
                 border-radius: 20px 20px 0 0;
                 margin: 0;
+                z-index: 5;
             }
             
             .avatar-container {
-                width: 150px;
-                height: 150px;
-                margin-bottom: 10px;
+                width: 100px;
+                height: 100px;
+                margin-bottom: 5px;
+            }
+            
+            .status-text {
+                font-size: 0.9rem;
+                margin-top: 5px;
             }
             
             .main-content {
-                padding-bottom: 270px;
+                padding-bottom: 200px;
+            }
+            
+            .chat-section {
+                position: relative;
+                z-index: 10;
             }
         }
 
@@ -451,7 +462,7 @@
             <div class="avatar-section">
                 <div class="avatar-container">
                     <div class="avatar" id="avatar">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Robert&backgroundColor=b6e3f4" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                        <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Assistant&backgroundColor=65c9ff" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                     </div>
                 </div>
                 <div class="status-text" id="statusText">Ready</div>
