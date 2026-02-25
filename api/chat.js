@@ -3,13 +3,16 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  
   try {
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: 'Message is required' });
@@ -22,6 +25,11 @@ module.exports = async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: message }] }],
+        systemInstruction: {
+          parts: [{
+            text: "You are a helpful voice assistant. Respond in plain conversational text without any markdown formatting, asterisks, hashtags, bold text, or special characters. Keep responses natural and easy to read aloud. Do not use bullet points or numbered lists - write in natural paragraphs."
+          }]
+        },
         tools: [{
           googleSearch: {}
         }]
