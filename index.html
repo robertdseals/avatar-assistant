@@ -449,6 +449,25 @@
             margin-top: 15px;
             color: #ff6b6b;
         }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: typingDot 1.4s infinite;
+        }
+        
+        @keyframes typingDot {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            30% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
     </style>
 </head>
 <body>
@@ -607,6 +626,10 @@
         async function processMessage(message) {
             updateStatus('Thinking...', 'idle');
             
+            // Add thinking indicator
+            const thinkingId = 'thinking-indicator';
+            addThinkingIndicator(thinkingId);
+            
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
@@ -626,12 +649,40 @@
                 const data = await response.json();
                 const assistantMessage = data.message;
                 
+                // Remove thinking indicator
+                removeThinkingIndicator(thinkingId);
+                
                 addMessage('assistant', assistantMessage);
                 speak(assistantMessage);
             } catch (error) {
+                removeThinkingIndicator(thinkingId);
                 showError('Error communicating with AI: ' + error.message);
                 addMessage('assistant', "I'm having trouble connecting right now. Please try again.");
                 updateStatus('Ready', 'idle');
+            }
+        }
+        
+        function addThinkingIndicator(id) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.id = id;
+            thinkingDiv.className = 'message assistant';
+            thinkingDiv.innerHTML = `
+                <div class="message-label">Assistant</div>
+                <div style="display: flex; gap: 5px; align-items: center;">
+                    <div class="typing-dot" style="animation-delay: 0s"></div>
+                    <div class="typing-dot" style="animation-delay: 0.2s"></div>
+                    <div class="typing-dot" style="animation-delay: 0.4s"></div>
+                </div>
+            `;
+            messagesContainer.appendChild(thinkingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function removeThinkingIndicator(id) {
+            const indicator = document.getElementById(id);
+            if (indicator) {
+                indicator.remove();
             }
         }
 
@@ -641,6 +692,25 @@
             }
 
             const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Get all available voices
+            const voices = synthesis.getVoices();
+            
+            // Try to find a female voice (prioritize English female voices)
+            const femaleVoice = voices.find(voice => 
+                voice.name.toLowerCase().includes('female') || 
+                voice.name.toLowerCase().includes('samantha') ||
+                voice.name.toLowerCase().includes('victoria') ||
+                voice.name.toLowerCase().includes('zira') ||
+                voice.name.toLowerCase().includes('hazel') ||
+                (voice.name.toLowerCase().includes('google') && voice.name.toLowerCase().includes('us') && voice.lang.includes('en'))
+            );
+            
+            // Set the voice if a female voice was found
+            if (femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+            
             utterance.rate = 1.0;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
@@ -709,6 +779,13 @@
         window.addEventListener('load', () => {
             initSpeechRecognition();
         });
+        
+        // Ensure voices are loaded before selecting
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {
+                // Voices are now loaded
+            };
+        }
     </script>
 </body>
 </html>
