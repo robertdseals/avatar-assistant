@@ -3,350 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Shaley Gardens</title>
-    <meta name="description" content="A quiet garden where you can talk with Shaley. She remembers the conversation while you visit.">
+    <title>Shaley Gardens | Garden help for Ocala and Central Florida</title>
+    <meta name="description" content="Friendly garden help for Ocala, Marion County, and The Villages. Ask Shaley about planting, sandy soil, freezes, and hurricanes in zones 9a and 9b.">
     <meta name="theme-color" content="#1f4a38">
-    <meta property="og:title" content="Shaley Gardens">
-    <meta property="og:description" content="A quiet garden where you can talk with Shaley. She remembers the conversation while you visit.">
+    <meta property="og:title" content="Shaley Gardens | Garden help for Ocala and Central Florida">
+    <meta property="og:description" content="Friendly garden help for Ocala, Marion County, and The Villages. Ask about planting, sandy soil, freezes, and hurricanes in zones 9a and 9b.">
     <meta property="og:image" content="https://shaleygardens.com/assets/shaley.jpg">
+    <meta property="og:url" content="https://shaleygardens.com/">
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="canonical" href="https://shaleygardens.com/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,650;0,6..12,750&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --ink: #24312b;
-            --muted: #5d6b62;
-            --leaf: #1f4a38;
-            --leaf-deep: #17382b;
-            --moss: #6e8a72;
-            --cream: #f4efe4;
-            --paper: rgba(255, 253, 248, 0.92);
-            --sand: #efe4d2;
-            --blossom: #f3d7cb;
-            --gold: #8d6b32;
-            --line: rgba(36, 49, 43, 0.12);
-            --shadow: 0 16px 40px rgba(36, 49, 43, 0.08);
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body { height: 100%; }
-
-        body {
-            margin: 0;
-            color: var(--ink);
-            font-family: "Nunito Sans", "Segoe UI", sans-serif;
-            background:
-                radial-gradient(900px 420px at 0% -10%, rgba(243, 215, 203, 0.85), transparent 60%),
-                radial-gradient(700px 380px at 100% 0%, rgba(198, 176, 112, 0.35), transparent 55%),
-                linear-gradient(180deg, #e6f0e2 0%, var(--cream) 42%, #f7f1e6 100%);
-            min-height: 100dvh;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background-image: radial-gradient(rgba(31, 74, 56, 0.08) 0.7px, transparent 0.7px);
-            background-size: 18px 18px;
-            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent 70%);
-        }
-
-        .page {
-            position: relative;
-            z-index: 1;
-            max-width: 1080px;
-            margin: 0 auto;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            padding: 16px 16px calc(12px + env(safe-area-inset-bottom));
-        }
-
-        .site-header { padding: 4px 4px 12px; }
-
-        .eyebrow {
-            margin: 0 0 2px;
-            color: var(--moss);
-            font-size: 0.75rem;
-            font-weight: 750;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            margin: 0;
-            font-family: Fraunces, Georgia, serif;
-            font-size: clamp(2rem, 7vw, 3.4rem);
-            font-weight: 650;
-            letter-spacing: -0.03em;
-            line-height: 1.02;
-            color: var(--leaf-deep);
-        }
-
-        .layout {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .host, .chat {
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-        }
-
-        .host {
-            display: grid;
-            grid-template-columns: 76px minmax(0, 1fr);
-            gap: 4px 12px;
-            align-items: center;
-            padding: 12px;
-        }
-
-        .portrait-wrap {
-            grid-row: 1 / span 3;
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            padding: 3px;
-            background: linear-gradient(160deg, #f3d7cb, #8d6b32 45%, #1f4a38);
-        }
-
-        .portrait {
-            display: block;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: center 18%;
-            background: var(--sand);
-        }
-
-        .portrait-wrap.speaking { animation: glow 1.4s ease-in-out infinite; }
-        .portrait-wrap.listening { animation: glow 0.9s ease-in-out infinite; }
-
-        .who {
-            margin: 0;
-            font-family: Fraunces, Georgia, serif;
-            font-size: 1.25rem;
-        }
-
-        .status, .memory-note { margin: 0; color: var(--muted); font-size: 0.95rem; }
-
-        .fresh {
-            justify-self: start;
-            min-height: 44px;
-            padding: 8px 2px;
-            white-space: nowrap;
-            border: 0;
-            background: transparent;
-            color: var(--leaf);
-            font: inherit;
-            font-weight: 750;
-            cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 3px;
-        }
-
-        .chat {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            padding: 14px 12px 12px;
-        }
-
-        .messages {
-            flex: 1;
-            min-height: 140px;
-            overflow-y: auto;
-            padding: 4px 4px 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .bubble {
-            max-width: min(100%, 42rem);
-            padding: 12px 14px;
-            border-radius: 18px;
-            line-height: 1.45;
-        }
-
-        .bubble.user {
-            align-self: flex-end;
-            background: #e5f0e2;
-            border-bottom-right-radius: 6px;
-        }
-
-        .bubble.assistant {
-            align-self: flex-start;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-bottom-left-radius: 6px;
-        }
-
-        .who-said {
-            display: block;
-            margin-bottom: 3px;
-            color: var(--moss);
-            font-size: 0.72rem;
-            font-weight: 750;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .dots { display: flex; gap: 5px; padding-top: 4px; }
-        .dots span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--leaf);
-            animation: blink 1.2s infinite;
-        }
-        .dots span:nth-child(2) { animation-delay: 0.15s; }
-        .dots span:nth-child(3) { animation-delay: 0.3s; }
-
-        .note {
-            margin: 8px 4px 0;
-            padding: 10px 12px;
-            border-radius: 12px;
-            background: #f8ece6;
-            color: #6d3b32;
-        }
-
-        .composer {
-            display: grid;
-            grid-template-columns: 56px minmax(0, 1fr) auto;
-            gap: 8px;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            min-height: 52px;
-            border-radius: 16px;
-            border: 1.5px solid var(--line);
-            background: #fff;
-            color: var(--ink);
-            font: inherit;
-            font-size: 16px;
-            padding: 12px 14px;
-        }
-
-        button {
-            font: inherit;
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-
-        .mic, .send, .stop {
-            min-height: 52px;
-            border-radius: 16px;
-            border: 0;
-        }
-
-        .mic {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--leaf);
-            color: #fff;
-            display: grid;
-            place-items: center;
-        }
-
-        .mic.listening { background: #8d4b58; }
-
-        .send, .stop {
-            min-width: 76px;
-            padding: 0 16px;
-            background: var(--leaf);
-            color: #fff;
-            font-weight: 750;
-        }
-
-        .stop {
-            grid-column: 1 / -1;
-            background: var(--leaf-deep);
-        }
-
-        button:disabled { opacity: 0.55; cursor: wait; }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        :focus-visible {
-            outline: 3px solid var(--gold);
-            outline-offset: 2px;
-        }
-
-        @keyframes glow {
-            50% { box-shadow: 0 0 0 6px rgba(31, 74, 56, 0.16); }
-        }
-
-        @keyframes blink {
-            50% { opacity: 0.35; }
-        }
-
-        @media (min-width: 860px) {
-            .page { padding: 28px 28px 32px; }
-            .layout {
-                display: grid;
-                grid-template-columns: 300px minmax(0, 1fr);
-                gap: 24px;
-                align-items: stretch;
-            }
-            .host {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                justify-content: center;
-                gap: 8px;
-                padding: 28px 24px;
-                position: sticky;
-                top: 24px;
-            }
-            .portrait-wrap {
-                width: 210px;
-                height: 210px;
-                margin-bottom: 8px;
-            }
-            .who { font-size: 2rem; }
-            .chat { min-height: 640px; padding: 22px; }
-            .messages { min-height: 420px; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/garden.css">
 </head>
 <body>
     <div class="page">
         <header class="site-header">
-            <p class="eyebrow">A quiet place to talk</p>
+            <p class="eyebrow">Ocala, Marion County, and The Villages</p>
             <h1>Shaley Gardens</h1>
+            <p class="tagline">Your friendly garden helper for Ocala and Central Florida.</p>
+            <nav class="nav" aria-label="Site">
+                <a href="/" aria-current="page">Chat</a>
+                <a href="/calendar.html">Planting calendar</a>
+                <a href="/calendar.html#weather">Freeze and hurricane tips</a>
+                <a href="/privacy.html">Privacy</a>
+            </nav>
         </header>
         <main class="layout">
             <section class="host" aria-label="Shaley">
@@ -355,10 +39,23 @@
                 </div>
                 <p class="who">Shaley</p>
                 <p class="status" id="statusText">Ready when you are</p>
-                <p class="memory-note">She remembers this visit.</p>
+                <p class="memory-note">She remembers this visit. Voice stays off until you ask.</p>
+                <label class="voice-toggle" for="autoVoice">
+                    <input id="autoVoice" type="checkbox">
+                    <span>Auto-play voice</span>
+                </label>
                 <button class="fresh" id="freshBtn" type="button">Start fresh</button>
             </section>
             <section class="chat" aria-label="Conversation">
+                <div class="starters">
+                    <p>Try a question</p>
+                    <button type="button" data-question="What can I plant in November?">What can I plant in November?</button>
+                    <button type="button" data-question="How do I protect plants from a freeze?">How do I protect plants from a freeze?</button>
+                    <button type="button" data-question="What grass grows best in sandy soil?">What grass grows best in sandy soil?</button>
+                    <button type="button" data-question="How do I get rid of fire ants safely?">How do I get rid of fire ants safely?</button>
+                    <button type="button" data-question="When should I plant tomatoes here?">When should I plant tomatoes here?</button>
+                    <button type="button" data-question="How do I get the yard ready for a hurricane?">How do I get the yard ready for a hurricane?</button>
+                </div>
                 <div class="messages" id="chatMessages" role="log" aria-relevant="additions"></div>
                 <div id="errorContainer" aria-live="polite"></div>
                 <form class="composer" id="composer">
@@ -374,10 +71,31 @@
                 </form>
             </section>
         </main>
+        <section class="signup" aria-labelledby="signupTitle">
+            <h2 id="signupTitle">Free monthly Central Florida garden tips</h2>
+            <p>Leave your email for a short monthly note about planting in Ocala and nearby. We do not send mail from this page.</p>
+            <form id="signupForm">
+                <label class="sr-only" for="email">Email address</label>
+                <input id="email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="Email address" required>
+                <div class="hp" aria-hidden="true">
+                    <label for="website">Leave this blank</label>
+                    <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+                </div>
+                <button class="send" type="submit">Sign up</button>
+            </form>
+            <p id="signupNote" role="status"></p>
+        </section>
+        <footer class="site-footer">
+            <p>Chats stay in this browser for the visit. Emails are used only for the newsletter. Garden answers are general guidance, not professional advice.</p>
+            <p>Contact: <a href="mailto:hello@shaleygardens.com">hello@shaleygardens.com</a></p>
+            <p><a href="/privacy.html">Read the privacy note</a></p>
+        </footer>
     </div>
+    <script src="js/signup.js"></script>
     <script>
-        const GREETING = "Hello. I'm Shaley. Tell me what's on your mind. You can tap the microphone, or type if you prefer.";
+        const GREETING = "Hello. I'm Shaley, your garden helper for Ocala and Central Florida. Tap a question, or type your own.";
         const MEMORY_KEY = 'shaley-gardens-visit';
+        const VOICE_KEY = 'shaley-auto-voice';
         const SILENT_WAV = 'data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
         const FEMALE_HINTS = ['aria', 'jenny', 'sara', 'sonia', 'libby', 'samantha', 'karen', 'moira', 'fiona', 'serena', 'allison', 'ava', 'emma', 'victoria', 'zira', 'hazel', 'female'];
 
@@ -389,6 +107,7 @@
         const sendBtn = document.getElementById('sendBtn');
         const stopBtn = document.getElementById('stopBtn');
         const textInput = document.getElementById('textInput');
+        const autoVoice = document.getElementById('autoVoice');
         const audioEl = new Audio();
         audioEl.setAttribute('playsinline', '');
         audioEl.preload = 'auto';
@@ -398,7 +117,21 @@
         let listening = false;
         let busy = false;
         let turnId = 0;
+        let speechToken = 0;
         let currentUrl = '';
+
+        try {
+            autoVoice.checked = localStorage.getItem(VOICE_KEY) === 'on';
+        } catch (error) {
+            autoVoice.checked = false;
+        }
+        autoVoice.addEventListener('change', () => {
+            try {
+                localStorage.setItem(VOICE_KEY, autoVoice.checked ? 'on' : 'off');
+            } catch (error) {
+                // The choice still applies for this visit.
+            }
+        });
 
         function loadMemory() {
             try {
@@ -444,6 +177,18 @@
             const body = document.createElement('div');
             body.textContent = text;
             bubble.append(label, body);
+            if (role !== 'user') {
+                const hear = document.createElement('button');
+                hear.type = 'button';
+                hear.className = 'hear';
+                hear.setAttribute('aria-label', 'Hear this reply');
+                hear.textContent = 'Hear';
+                hear.addEventListener('click', () => {
+                    unlockAudio();
+                    speakReply(text);
+                });
+                bubble.appendChild(hear);
+            }
             messagesEl.appendChild(bubble);
             messagesEl.scrollTop = messagesEl.scrollHeight;
             if (remember) {
@@ -536,6 +281,7 @@
         }
 
         function haltVoice() {
+            audioEl.onended = null;
             audioEl.pause();
             if (window.speechSynthesis) window.speechSynthesis.cancel();
             stopBtn.hidden = true;
@@ -543,26 +289,28 @@
 
         function stopSpeaking() {
             turnId += 1;
+            speechToken += 1;
             haltVoice();
             busy = false;
             sendBtn.disabled = false;
             if (!listening) setStatus('Ready when you are', 'ready');
         }
 
-        function playWav(b64) {
+        function playWav(b64, token) {
             const bytes = Uint8Array.from(atob(b64), (char) => char.charCodeAt(0));
             const blobUrl = URL.createObjectURL(new Blob([bytes], { type: 'audio/wav' }));
             if (currentUrl) URL.revokeObjectURL(currentUrl);
             currentUrl = blobUrl;
             audioEl.src = blobUrl;
             audioEl.onended = () => {
+                if (token !== speechToken) return;
                 stopBtn.hidden = true;
                 if (!listening) setStatus('Ready when you are', 'ready');
             };
             return audioEl.play();
         }
 
-        function speakWithBrowser(text, gen) {
+        function speakWithBrowser(text, token) {
             if (!window.speechSynthesis) {
                 showNote('This browser cannot play a voice, so the reply is here to read.');
                 setStatus('Ready when you are', 'ready');
@@ -574,12 +322,12 @@
             if (voice) utterance.voice = voice;
             utterance.rate = 0.96;
             utterance.onend = () => {
-                if (gen !== turnId) return;
+                if (token !== speechToken) return;
                 stopBtn.hidden = true;
                 if (!listening) setStatus('Ready when you are', 'ready');
             };
             utterance.onerror = () => {
-                if (gen !== turnId) return;
+                if (token !== speechToken) return;
                 showNote('This browser cannot play a voice, so the reply is here to read.');
                 stopBtn.hidden = true;
                 setStatus('Ready when you are', 'ready');
@@ -587,7 +335,8 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        async function speakReply(text, gen) {
+        async function speakReply(text) {
+            const token = ++speechToken;
             haltVoice();
             setStatus('Speaking', 'speaking');
             stopBtn.hidden = false;
@@ -598,20 +347,20 @@
                     body: JSON.stringify({ text }),
                     signal: AbortSignal.timeout(9000),
                 });
-                if (gen !== turnId) return;
+                if (token !== speechToken) return;
                 if (response.ok) {
                     const data = await response.json();
-                    if (gen !== turnId) return;
+                    if (token !== speechToken) return;
                     if (typeof data.audio === 'string' && data.audio.length > 32 && data.audio.length < 4000000) {
-                        await playWav(data.audio);
+                        await playWav(data.audio, token);
                         return;
                     }
                 }
             } catch (error) {
                 // The phone or computer voice below is the backup.
             }
-            if (gen !== turnId) return;
-            speakWithBrowser(text, gen);
+            if (token !== speechToken) return;
+            speakWithBrowser(text, token);
         }
 
         async function submitMessage(raw) {
@@ -633,7 +382,8 @@
                 if (gen !== turnId) return;
                 thinking.remove();
                 addBubble('assistant', reply, true);
-                await speakReply(reply, gen);
+                if (autoVoice.checked) await speakReply(reply);
+                else if (!listening) setStatus('Ready when you are', 'ready');
             } catch (error) {
                 if (gen !== turnId) return;
                 thinking.remove();
@@ -713,6 +463,10 @@
         document.getElementById('composer').addEventListener('submit', (event) => {
             event.preventDefault();
             submitMessage(textInput.value);
+        });
+
+        document.querySelectorAll('[data-question]').forEach((button) => {
+            button.addEventListener('click', () => submitMessage(button.getAttribute('data-question')));
         });
 
         stopBtn.addEventListener('click', stopSpeaking);
