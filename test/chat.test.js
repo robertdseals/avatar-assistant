@@ -110,6 +110,9 @@ describe('chat handler', { concurrency: 1 }, () => {
     assert.equal(requested.options.headers['x-goog-api-key'], FAKE_KEY);
     const payload = JSON.parse(requested.options.body);
     assert.match(payload.systemInstruction.parts[0].text, /Your name is Shaley/);
+    assert.match(payload.systemInstruction.parts[0].text, /Central Florida/);
+    assert.match(payload.systemInstruction.parts[0].text, /IFAS/);
+    assert.match(payload.systemInstruction.parts[0].text, /Do not give pesticide/);
     assert.deepEqual(payload.tools, [{ googleSearch: {} }]);
     assert.equal(payload.contents[0].parts[0].text, 'Hello');
   });
@@ -374,6 +377,7 @@ describe('chat handler', { concurrency: 1 }, () => {
     assert.equal(requested.contents.at(-2).role, 'model');
     assert.equal(JSON.stringify(requested.contents).includes(FAKE_KEY), false);
     assert.match(requested.systemInstruction.parts[0].text, /Your name is Shaley/);
+    assert.match(requested.systemInstruction.parts[0].text, /Marion County Extension/);
     assert.deepEqual(requested.tools, [{ googleSearch: {} }]);
     const sent = JSON.stringify(requested.contents);
     assert.equal(sent.includes('question 0'), false);
