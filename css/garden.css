@@ -454,6 +454,22 @@
         .month { scroll-margin-top: 12px; padding-top: 8px; }
         .month + .month { border-top: 1px solid var(--line); margin-top: 8px; }
 
+        .guide a { color: var(--leaf); font-weight: 750; }
+
+        .ask-shaley {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            margin: 4px 0 16px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--leaf);
+            color: #fff !important;
+            font-weight: 750;
+            text-decoration: none;
+        }
+
         .sources a { color: var(--leaf); font-weight: 750; }
 
         .site-footer a { color: var(--leaf); font-weight: 750; }
