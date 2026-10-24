@@ -6,9 +6,16 @@ const {
   createLimiter,
   clientIp,
 } = require('../lib/guard');
+const {
+  SET_KEY,
+  normalizeEmail,
+  readResendConfig,
+  redisCommand,
+  welcomeContent,
+  deliverOne,
+} = require('../lib/newsletter');
 
 const MAX_BODY_CHARS = 4000;
-const SET_KEY = 'shaley:newsletter:emails';
 const SUCCESS = "You're signed up for free monthly Central Florida garden tips.";
 const COMING_SOON = 'The newsletter is coming soon. Please check back a little later.';
 const INVALID = 'Please enter a valid email address.';
@@ -22,47 +29,31 @@ const limiter = createLimiter({
   globalPerMinute: 30,
 });
 
-function normalizeEmail(value) {
-  if (typeof value !== 'string') return '';
-  const email = value.trim().toLowerCase();
-  if (email.length < 6 || email.length > 254) return '';
-  if (email.includes('..') || /[\s<>]/.test(email)) return '';
-  const parts = email.split('@');
-  if (parts.length !== 2) return '';
-  const [local, domain] = parts;
-  if (!local || !domain || !domain.includes('.')) return '';
-  if (!/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+$/i.test(local)) return '';
-  if (!/^[a-z0-9.-]+$/i.test(domain)) return '';
-  if (domain.startsWith('.') || domain.endsWith('.') || domain.includes('..')) return '';
-  return email;
-}
-
 function honeypotFilled(body) {
   const extra = body && body.website;
   return typeof extra === 'string' && extra.trim().length > 0;
 }
 
 async function addSubscriber(config, email) {
-  const response = await fetch(config.url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${config.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(['SADD', SET_KEY, email]),
-    redirect: 'error',
-    signal: AbortSignal.timeout(2500),
+  const added = await redisCommand(config, ['SADD', SET_KEY, email]);
+  if (typeof added !== 'number') throw new Error('store result');
+  return added;
+}
+
+async function sendWelcome(redis, email) {
+  const resend = readResendConfig();
+  if (!resend) return;
+  const note = welcomeContent();
+  const result = await deliverOne({
+    redis,
+    resend,
+    now: Date.now(),
+    email,
+    subject: note.subject,
+    htmlBody: note.html,
+    textBody: note.text,
   });
-  const raw = await response.text();
-  if (!response.ok) throw new Error('store status');
-  let data;
-  try {
-    data = JSON.parse(raw);
-  } catch {
-    throw new Error('store non-json');
-  }
-  if (!data || typeof data.result !== 'number') throw new Error('store result');
-  return data.result;
+  if (result.status !== 'sent') console.error('Welcome email was not sent');
 }
 
 function reply(res, status, payload) {
@@ -95,11 +86,20 @@ module.exports = async function handler(req, res) {
   if (!email) return reply(res, 400, { error: INVALID });
   if (!redis) return reply(res, 200, { status: 'soon', message: COMING_SOON });
 
+  let added = 0;
   try {
-    await addSubscriber(redis, email);
+    added = await addSubscriber(redis, email);
   } catch (error) {
     console.error('Newsletter store unavailable');
     return reply(res, 503, { error: LATER });
+  }
+
+  if (added === 1) {
+    try {
+      await sendWelcome(redis, email);
+    } catch (error) {
+      console.error('Welcome email was not sent');
+    }
   }
 
   return reply(res, 200, { status: 'ok', message: SUCCESS });

@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/send-newsletter.js": {
+      "maxDuration": 60
+    }
+  }
+}
