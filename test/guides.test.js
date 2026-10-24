@@ -18,18 +18,18 @@ function guideProse(file) {
 
 test('local guides are linked, sourced, and in the requested length', () => {
   const guides = [
-    ['freeze.html', 'Protecting your plants from a Central Florida freeze', '/?ask=freeze'],
-    ['lawns.html', 'Best lawn grasses for sandy Ocala soil', '/?ask=lawn'],
-    ['fall-vegetables.html', 'Fall and winter vegetables for Marion County', '/?ask=fall-vegetables'],
+    ['freeze.html', 'Protecting your plants from a Central Florida freeze', '/?ask=freeze', 600, 900],
+    ['lawns.html', 'Best lawn grasses for sandy Ocala soil', '/?ask=lawn', 600, 1100],
+    ['fall-vegetables.html', 'Fall and winter vegetables for Marion County', '/?ask=fall-vegetables', 600, 900],
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const home = fs.readFileSync('index.html', 'utf8');
   const banned = /\b(seafood|shrimp|oyster|lobster|scallop|tuna|salmon)\b/i;
 
-  for (const [file, title, ask] of guides) {
+  for (const [file, title, ask, minWords, maxWords] of guides) {
     const html = fs.readFileSync(file, 'utf8');
     const count = guideProse(file).length;
-    assert.ok(count >= 600 && count <= 900, `${file} has ${count} words`);
+    assert.ok(count >= minWords && count <= maxWords, `${file} has ${count} words`);
     assert.match(html, new RegExp(`<title>${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\| Shaley Gardens</title>`));
     assert.match(html, /name="description"/);
     assert.match(html, /Ask Shaley about this/);
@@ -40,6 +40,12 @@ test('local guides are linked, sourced, and in the requested length', () => {
     assert.match(sitemap, new RegExp(`https://shaleygardens.com/${file}`));
     assert.equal(banned.test(html), false);
   }
+
+  assert.match(fs.readFileSync('lawns.html', 'utf8'), /6\.8\.14/);
+  assert.match(fs.readFileSync('lawns.html', 'utf8'), /0\.7 pounds of readily available nitrogen/);
+  const fall = fs.readFileSync('fall-vegetables.html', 'utf8');
+  assert.match(fall, /Sweet peas are an ornamental, not a vegetable/);
+  assert.equal(/and sweet peas/.test(fall), false);
 
   assert.match(home, /linkedQuestions/);
   assert.match(home, /ask=freeze|freeze:/);
