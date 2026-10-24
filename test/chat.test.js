@@ -60,6 +60,10 @@ describe('chat handler', { concurrency: 1 }, () => {
     delete process.env.VERCEL_URL;
     delete process.env.VERCEL_BRANCH_URL;
     delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    delete process.env.KV_REST_API_URL;
+    delete process.env.KV_REST_API_TOKEN;
+    delete process.env.UPSTASH_REDIS_REST_URL;
+    delete process.env.UPSTASH_REDIS_REST_TOKEN;
     originalFetch = global.fetch;
     logs = [];
     originalError = console.error;

@@ -22,6 +22,7 @@ const MAX_HISTORY_TURNS = 8;
 const MAX_HISTORY_CHARS = 6000;
 
 const limiter = createLimiter({
+  name: 'chat',
   perIpPerMinute: 8,
   perIpPerHour: 40,
   globalPerMinute: 20,
@@ -96,7 +97,7 @@ async function handler(req, res) {
   if (parsed.kind !== 'ok') return sendError(res, 400, CLIENT_ERRORS.missing);
 
   const ip = clientIp(req);
-  const limit = limiter.check(ip);
+  const limit = await limiter.check(ip);
   if (!limit.ok) {
     console.warn('Chat rate limit reached for', ip);
     return sendError(res, 429, CLIENT_ERRORS.rate, {
