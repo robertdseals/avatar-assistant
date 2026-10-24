@@ -21,6 +21,7 @@ const MAX_AUDIO_BYTES = 2500000;
 const VOICE_NAME = 'Sulafat';
 
 const limiter = createLimiter({
+  name: 'speak',
   perIpPerMinute: 8,
   perIpPerHour: 40,
   globalPerMinute: 20,
@@ -93,7 +94,7 @@ async function handler(req, res) {
   if (parsed.kind !== 'ok') return sendError(res, 400, CLIENT_ERRORS.missing);
 
   const ip = clientIp(req);
-  const limit = limiter.check(ip);
+  const limit = await limiter.check(ip);
   if (!limit.ok) {
     console.warn('Speech rate limit reached for', ip);
     return sendError(res, 429, CLIENT_ERRORS.rate, {
