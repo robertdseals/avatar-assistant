@@ -16,7 +16,7 @@ const {
 } = require('../lib/newsletter');
 
 const MAX_BODY_CHARS = 4000;
-const SUCCESS = "You're signed up for free monthly Central Florida garden tips.";
+const SUCCESS = "You're signed up for free monthly Central Florida garden tips. Check your inbox for a welcome note. If you don't see it in a few minutes, look in your junk or spam folder and mark it Not spam so future issues reach you.";
 const COMING_SOON = 'The newsletter is coming soon. Please check back a little later.';
 const INVALID = 'Please enter a valid email address.';
 const BUSY = 'Please wait a little while before trying again.';
