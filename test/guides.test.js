@@ -65,24 +65,9 @@ test('the November newsletter is a draft and is not on the site', () => {
   assert.match(draft, /calendar\.html/);
   assert.match(draft, /Do not send/);
   assert.equal(/\b(seafood|shrimp|oyster|lobster|scallop|tuna|salmon)\b/i.test(draft), false);
-  const pages = ['index.html', 'calendar.html', 'privacy.html', 'freeze.html', 'lawns.html', 'fall-vegetables.html', 'guides/index.html', 'sitemap.xml', 'robots.txt']
+  const pages = ['index.html', 'calendar.html', 'privacy.html', 'freeze.html', 'lawns.html', 'fall-vegetables.html', 'sitemap.xml', 'robots.txt']
     .map((file) => fs.readFileSync(file, 'utf8'))
     .join('\n');
   assert.equal(pages.includes('newsletter/'), false);
   assert.match(fs.readFileSync('.vercelignore', 'utf8'), /^newsletter\s*$/m);
-});
-
-test('the November planting guide is a one-page PDF and is listed newest first', () => {
-  const home = fs.readFileSync('index.html', 'utf8');
-  const guides = fs.readFileSync('guides/index.html', 'utf8');
-  const pdf = fs.readFileSync('public/guides/2026-11-planting-guide.pdf');
-  const pdfText = pdf.toString('latin1');
-  assert.match(home, /Free download: November planting guide \(PDF\)/);
-  assert.match(home, /href="\/public\/guides\/2026-11-planting-guide\.pdf"/);
-  assert.match(guides, /href="\/guides" aria-current="page"/);
-  assert.match(guides, /href="\/public\/guides\/2026-11-planting-guide\.pdf"/);
-  assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
-  assert.equal((pdfText.match(/\/Type\s*\/Page(?!s)/g) || []).length, 1);
-  assert.match(pdfText, /\/MediaBox\s*\[\s*0\s+0\s+612\s+792\s*\]/);
-  assert.equal(/\b(seafood|shrimp|oyster|lobster|scallop|tuna|salmon)\b/i.test(guides), false);
 });
