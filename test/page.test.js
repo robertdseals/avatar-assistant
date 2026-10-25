@@ -50,6 +50,7 @@ test('the planting calendar, weather tips, and privacy note stay on plants', () 
   assert.match(calendar, /gardeningsolutions\.ifas\.ufl\.edu/);
   assert.match(privacy, /browser for the visit/);
   assert.match(privacy, /only for the garden newsletter/);
+  assert.match(privacy, /unsubscribe/i);
   assert.match(privacy, /general guidance/);
   assert.match(privacy, /Contact: <a href="mailto:hello@shaleygardens.com">hello@shaleygardens.com<\/a>/);
   assert.match(calendar, /mailto:hello@shaleygardens.com/);

@@ -57,6 +57,9 @@ describe('newsletter signup', { concurrency: 1 }, () => {
     process.env.KV_REST_API_TOKEN = TOKEN;
     delete process.env.UPSTASH_REDIS_REST_URL;
     delete process.env.UPSTASH_REDIS_REST_TOKEN;
+    delete process.env.RESEND_API_KEY;
+    delete process.env.NEWSLETTER_FROM;
+    delete process.env.ADMIN_SEND_TOKEN;
     delete process.env.VERCEL_URL;
     originalFetch = global.fetch;
     global.fetch = async () => {
