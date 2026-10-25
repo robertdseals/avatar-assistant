@@ -169,6 +169,8 @@ describe('newsletter mail', { concurrency: 1 }, () => {
     assert.match(memory.sent[0].body.headers['List-Unsubscribe'], /https:\/\/shaleygardens\.com\/api\/unsubscribe\?token=/);
     assert.equal(memory.sent[0].body.headers['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');
     assert.match(memory.sent[0].body.html, /Unsubscribe/);
+    assert.match(memory.sent[0].body.html, /If this is in your junk or spam folder/);
+    assert.match(memory.sent[0].body.text, /If this is in your junk or spam folder/);
     assert.match(memory.sent[0].body.text, /hello@shaleygardens.com/);
     assert.equal(JSON.stringify(res.body).includes('gardener@example.com'), false);
     assert.equal(memory.sent[0].auth.includes('re_test_key_do_not_leak'), true);

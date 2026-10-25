@@ -85,6 +85,8 @@ describe('newsletter signup', { concurrency: 1 }, () => {
     assert.equal(res.statusCode, 200);
     assert.equal(res.body.status, 'ok');
     assert.match(res.body.message, /signed up/i);
+    assert.match(res.body.message, /junk or spam folder/);
+    assert.ok(res.body.message.length < 240);
     assert.deepEqual(writes, [{
       url: URL,
       command: ['SADD', 'shaley:newsletter:emails', 'gardener@example.com'],
