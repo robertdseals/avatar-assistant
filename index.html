@@ -171,6 +171,44 @@
             }, 6000);
         }
 
+        let activeHear = null;
+
+        function speakerIcon() {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.setAttribute('width', '18');
+            svg.setAttribute('height', '18');
+            svg.setAttribute('aria-hidden', 'true');
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('fill', 'currentColor');
+            path.setAttribute('d', 'M4 9v6h4l5 4V5L8 9H4zm11.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 15.5 12zM14 4.1v2.04a5.5 5.5 0 0 1 0 11.72v2.04a7.5 7.5 0 0 0 0-15.8z');
+            svg.appendChild(path);
+            return svg;
+        }
+
+        function labelHear(button, playing) {
+            const text = document.createElement('span');
+            if (playing) {
+                text.textContent = 'Playing…';
+                button.setAttribute('aria-label', "Playing Shaley's answer");
+            } else {
+                text.textContent = 'Listen to answer';
+                button.setAttribute('aria-label', "Listen to Shaley's answer");
+            }
+            button.replaceChildren(speakerIcon(), text);
+        }
+
+        function showHearPlaying(button) {
+            if (activeHear && activeHear !== button) labelHear(activeHear, false);
+            activeHear = button || null;
+            if (button) labelHear(button, true);
+        }
+
+        function clearHearPlaying() {
+            if (activeHear) labelHear(activeHear, false);
+            activeHear = null;
+        }
+
         function addBubble(role, text, remember) {
             const bubble = document.createElement('article');
             bubble.className = `bubble ${role === 'user' ? 'user' : 'assistant'}`;
@@ -180,15 +218,15 @@
             const body = document.createElement('div');
             body.textContent = text;
             bubble.append(label, body);
+            let hear = null;
             if (role !== 'user') {
-                const hear = document.createElement('button');
+                hear = document.createElement('button');
                 hear.type = 'button';
                 hear.className = 'hear';
-                hear.setAttribute('aria-label', 'Hear this reply');
-                hear.textContent = 'Hear';
+                labelHear(hear, false);
                 hear.addEventListener('click', () => {
                     unlockAudio();
-                    speakReply(text);
+                    speakReply(text, hear);
                 });
                 bubble.appendChild(hear);
             }
@@ -199,6 +237,7 @@
                 memory = memory.slice(-8);
                 saveMemory();
             }
+            return hear;
         }
 
         function renderTranscript() {
@@ -288,6 +327,7 @@
             audioEl.pause();
             if (window.speechSynthesis) window.speechSynthesis.cancel();
             stopBtn.hidden = true;
+            clearHearPlaying();
         }
 
         function stopSpeaking() {
@@ -308,6 +348,7 @@
             audioEl.onended = () => {
                 if (token !== speechToken) return;
                 stopBtn.hidden = true;
+                clearHearPlaying();
                 if (!listening) setStatus('Ready when you are', 'ready');
             };
             return audioEl.play();
@@ -318,6 +359,7 @@
                 showNote('This browser cannot play a voice, so the reply is here to read.');
                 setStatus('Ready when you are', 'ready');
                 stopBtn.hidden = true;
+                clearHearPlaying();
                 return;
             }
             const utterance = new SpeechSynthesisUtterance(text);
@@ -327,20 +369,23 @@
             utterance.onend = () => {
                 if (token !== speechToken) return;
                 stopBtn.hidden = true;
+                clearHearPlaying();
                 if (!listening) setStatus('Ready when you are', 'ready');
             };
             utterance.onerror = () => {
                 if (token !== speechToken) return;
                 showNote('This browser cannot play a voice, so the reply is here to read.');
                 stopBtn.hidden = true;
+                clearHearPlaying();
                 setStatus('Ready when you are', 'ready');
             };
             window.speechSynthesis.speak(utterance);
         }
 
-        async function speakReply(text) {
+        async function speakReply(text, hearBtn) {
             const token = ++speechToken;
             haltVoice();
+            showHearPlaying(hearBtn);
             setStatus('Speaking', 'speaking');
             stopBtn.hidden = false;
             try {
@@ -384,8 +429,8 @@
                 const reply = await askShaley(message, history);
                 if (gen !== turnId) return;
                 thinking.remove();
-                addBubble('assistant', reply, true);
-                if (autoVoice.checked) await speakReply(reply);
+                const hear = addBubble('assistant', reply, true);
+                if (autoVoice.checked) await speakReply(reply, hear);
                 else if (!listening) setStatus('Ready when you are', 'ready');
             } catch (error) {
                 if (gen !== turnId) return;

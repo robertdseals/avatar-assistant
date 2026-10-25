@@ -23,6 +23,10 @@ test('the page is branded as Shaley Gardens and built for phones', () => {
   assert.equal(/id="autoVoice"[^>]*checked/.test(html), false);
   assert.match(html, /shaley-auto-voice/);
   assert.match(html, /className = 'hear'/);
+  assert.match(html, /Listen to answer/);
+  assert.match(html, /Listen to Shaley's answer/);
+  assert.match(html, /Playing…/);
+  assert.match(html, /Playing Shaley's answer/);
   assert.match(html, /if \(autoVoice\.checked\)/);
   assert.match(fs.readFileSync('js/signup.js', 'utf8'), /\/api\/subscribe/);
   assert.match(html, /name="website"/);
