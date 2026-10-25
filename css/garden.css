@@ -456,6 +456,39 @@
 
         .guide a { color: var(--leaf); font-weight: 750; }
 
+        .signup .download a {
+            color: var(--leaf-deep);
+            font-weight: 750;
+        }
+
+        .download-list {
+            list-style: none;
+            margin: 12px 0 0;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .download-list a {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            min-height: 44px;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #fff;
+            color: var(--leaf-deep);
+            text-decoration: none;
+        }
+
+        .download-list small {
+            color: var(--muted);
+            font-size: 0.92rem;
+            font-weight: 650;
+        }
+
         .ask-shaley {
             display: inline-flex;
             align-items: center;
