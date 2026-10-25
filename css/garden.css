@@ -51,6 +51,15 @@
 
         .site-header { padding: 4px 4px 12px; }
 
+        .site-header h1 { line-height: 0; }
+
+        .site-logo {
+            display: block;
+            width: min(200px, 62vw);
+            height: auto;
+            margin: 2px 0 10px;
+        }
+
         .eyebrow {
             margin: 0 0 2px;
             color: var(--moss);
