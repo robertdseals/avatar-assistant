@@ -372,7 +372,7 @@
 
         .starters { margin-bottom: 12px; }
 
-        .starters p, .signup h2, .guide h2, .guide h3 {
+        .starters p, .signup h2, .guide h2, .guide h3, .guide h4 {
             font-family: Fraunces, Georgia, serif;
             color: var(--leaf-deep);
         }
@@ -438,6 +438,13 @@
 
         .signup h2, .guide h2 { margin: 0 0 8px; font-size: 1.55rem; line-height: 1.2; }
         .guide h3 { margin: 14px 0 4px; font-size: 1.15rem; }
+        .guide h4 { margin: 12px 0 4px; font-size: 1.05rem; }
+        .newsletter-issue ul { margin: 0 0 10px; padding-left: 1.2em; }
+        .newsletter-issue h2,
+        .newsletter-issue h3,
+        .newsletter-issue h4,
+        .newsletter-issue p,
+        .newsletter-issue li { max-width: 40rem; }
         .signup p, .guide p, .guide li, .site-footer p {
             margin: 0 0 10px;
             font-size: 1.05rem;

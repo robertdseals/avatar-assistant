@@ -1,6 +1,9 @@
-# November in your Central Florida garden
+---
+sent: true
+date: 2026-11-01
+---
 
-Draft only. Do not send this note, and do not publish it on the website.
+# November in your Central Florida garden
 
 Hello from Shaley Gardens. November in Ocala, Marion County, and The Villages is a planting month. We are in USDA zones 9a and 9b. At the Ocala station, NOAA’s median first 32°F freeze is December 12 and the median last is February 25. About one year in ten, the first comes by November 21 or the last comes after March 21.
 
@@ -32,4 +35,4 @@ Afterward, water if the wind dried the plants, and wait to prune cold-damaged gr
 
 Let the lawn tell you when to water. On an established St. Augustinegrass or bahiagrass lawn, water when the blades fold, turn blue-gray, or keep your footprints. Then give about one-half to three-quarters of an inch, and wait until it asks again. Follow your local watering rules.
 
-Questions can go to the Marion County Extension office or to hello@shaleygardens.com. Nothing in this draft has been sent.
+Questions can go to the Marion County Extension office or to hello@shaleygardens.com.

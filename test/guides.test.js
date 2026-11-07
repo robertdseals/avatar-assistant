@@ -53,17 +53,21 @@ test('local guides are linked, sourced, and in the requested length', () => {
   assert.match(fs.readFileSync('privacy.html', 'utf8'), /fall-vegetables\.html/);
 });
 
-test('the November newsletter is a draft and is not on the site', () => {
+test('the November newsletter is marked sent and raw drafts stay off the site', () => {
+  const { splitFrontmatter } = require('../lib/newsletter');
   const draft = fs.readFileSync('newsletter/2026-11-november.md', 'utf8');
-  const body = draft.replace(/^#.*\n+/, '').replace(/^Draft only\..*\n+/, '');
-  const count = words(body).length;
-  assert.match(draft, /^# November in your Central Florida garden/);
+  const { meta, body } = splitFrontmatter(draft);
+  const prose = body.trim().replace(/^#.*\n+/, '').replace(/^Draft only\..*\n+/, '');
+  const count = words(prose).length;
+  assert.equal(meta.sent, 'true');
+  assert.match(body, /# November in your Central Florida garden/);
   assert.ok(count >= 400 && count <= 600, `newsletter has ${count} words`);
   assert.match(draft, /freeze\.html/);
   assert.match(draft, /lawns\.html/);
   assert.match(draft, /fall-vegetables\.html/);
   assert.match(draft, /calendar\.html/);
-  assert.match(draft, /Do not send/);
+  assert.equal(/do not send/i.test(draft), false);
+  assert.equal(/nothing in this draft has been sent/i.test(draft), false);
   assert.equal(/\b(seafood|shrimp|oyster|lobster|scallop|tuna|salmon)\b/i.test(draft), false);
   const pages = ['index.html', 'calendar.html', 'privacy.html', 'freeze.html', 'lawns.html', 'fall-vegetables.html', 'guides/index.html', 'sitemap.xml', 'robots.txt']
     .map((file) => fs.readFileSync(file, 'utf8'))

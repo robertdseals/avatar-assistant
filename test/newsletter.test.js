@@ -146,6 +146,9 @@ describe('newsletter mail', { concurrency: 1 }, () => {
     assert.equal(note.subject, 'November in your Central Florida garden');
     assert.equal(/draft only/i.test(note.html), false);
     assert.equal(/draft only/i.test(note.text), false);
+    assert.equal(note.html.includes('sent:'), false);
+    assert.equal(note.text.includes('sent:'), false);
+    assert.equal(/nothing in this draft has been sent/i.test(note.html), false);
     assert.match(note.html, /href="https:\/\/shaleygardens\.com\/calendar\.html"/);
     assert.equal(/<script/i.test(note.html), false);
   });
