@@ -1,6 +1,6 @@
 # Shaley Gardens
 
-A small site for garden questions in Ocala, Marion County, and The Villages. Chat, voice, and the newsletter signup run as Vercel functions. Newsletter drafts in `newsletter/` are not published on the website.
+A small site for garden questions in Ocala, Marion County, and The Villages. Chat, voice, and the newsletter signup run as Vercel functions. Files in `newsletter/` are not deployed. An issue is listed at `/newsletters` only when its frontmatter says `sent: true` and the archive pages have been rebuilt.
 
 ## Send the newsletter with Resend
 
@@ -93,6 +93,23 @@ ADMIN_SEND_TOKEN='paste-the-token' node scripts/send-newsletter.js \
 ```
 
 Without `--confirm`, the script stops and sends nothing. Running the same file again skips addresses that already got that file. Add `--again` only when you mean to send that file a second time.
+
+After a real send, publish that issue on the site. At the top of the file, set the sent flag:
+
+```yaml
+---
+sent: true
+date: 2026-11-01
+---
+```
+
+`sent: false`, or no flag at all, keeps the file off the archive. Then rebuild the pages:
+
+```bash
+node scripts/build-newsletters.js
+```
+
+The public list is newest first. A draft such as `newsletter/2026-12-december.md` stays hidden until that flag is true.
 
 The script asks the website to send in small batches so a long list is not cut off. At 100 messages in a day it stops. Run the same command the next day to continue. The command prints counts only. It does not print subscriber addresses.
 
