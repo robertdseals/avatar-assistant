@@ -528,6 +528,57 @@
             .signup .send { width: auto; }
         }
 
+        .site-alert {
+            flex-shrink: 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            width: min(100%, 48rem);
+            margin: 0 0 14px;
+            padding: 14px 10px 14px 16px;
+            background: rgba(255, 253, 248, 0.96);
+            color: var(--ink);
+            border: 1px solid rgba(141, 107, 50, 0.35);
+            border-left-width: 4px;
+            border-left-color: var(--gold);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .site-alert p {
+            flex: 1;
+            min-width: 0;
+            margin: 6px 0;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .site-alert strong {
+            font-family: Fraunces, Georgia, serif;
+            font-weight: 650;
+            color: var(--leaf-deep);
+        }
+
+        .site-alert-dismiss {
+            flex: none;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            margin: 0;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 253, 248, 0.9);
+            color: var(--leaf-deep);
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .site-alert-dismiss:hover {
+            background: rgba(31, 74, 56, 0.08);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation: none !important;
