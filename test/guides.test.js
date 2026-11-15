@@ -76,16 +76,48 @@ test('the November newsletter is marked sent and raw drafts stay off the site', 
   assert.match(fs.readFileSync('.vercelignore', 'utf8'), /^newsletter\s*$/m);
 });
 
-test('the November planting guide is a one-page PDF and is listed newest first', () => {
-  const home = fs.readFileSync('index.html', 'utf8');
+test('the November planting guide is a one-page PDF and stays listed', () => {
   const guides = fs.readFileSync('guides/index.html', 'utf8');
   const pdf = fs.readFileSync('guides/2026-11-planting-guide.pdf');
   const pdfText = pdf.toString('latin1');
   assert.equal(fs.existsSync('public'), false);
-  assert.match(home, /Free download: November planting guide \(PDF\)/);
-  assert.match(home, /href="\/guides\/2026-11-planting-guide\.pdf"/);
   assert.match(guides, /href="\/guides" aria-current="page"/);
   assert.match(guides, /href="\/guides\/2026-11-planting-guide\.pdf"/);
+  assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
+  assert.equal((pdfText.match(/\/Type\s*\/Page(?!s)/g) || []).length, 1);
+  assert.match(pdfText, /\/MediaBox\s*\[\s*0\s+0\s+612\s+792\s*\]/);
+  assert.equal(/\b(seafood|shrimp|oyster|lobster|scallop|tuna|salmon)\b/i.test(guides), false);
+});
+
+test('the December planting guide is a one-page PDF and is listed newest first', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  const guides = fs.readFileSync('guides/index.html', 'utf8');
+  const pages = fs.readFileSync('lib/newsletter-pages.js', 'utf8');
+  const archive = fs.readFileSync('newsletters/index.html', 'utf8');
+  const welcome = fs.readFileSync('lib/newsletter.js', 'utf8');
+  const historical = fs.readFileSync('newsletters/2026-11-november/index.html', 'utf8');
+  const pdf = fs.readFileSync('guides/2026-12-planting-guide.pdf');
+  const pdfText = pdf.toString('latin1');
+  assert.equal(fs.existsSync('public'), false);
+  assert.match(home, /Free download: December planting guide \(PDF\)/);
+  assert.match(home, /href="\/guides\/2026-12-planting-guide\.pdf"/);
+  assert.equal(/2026-11-planting-guide\.pdf/.test(home), false);
+  assert.match(guides, /href="\/guides" aria-current="page"/);
+  assert.match(guides, /href="\/guides\/2026-12-planting-guide\.pdf"/);
+  assert.ok(
+    guides.indexOf('/guides/2026-12-planting-guide.pdf') < guides.indexOf('/guides/2026-11-planting-guide.pdf'),
+    'December is listed above November',
+  );
+  assert.match(pages, /Free download: December planting guide \(PDF\)/);
+  assert.match(pages, /href="\/guides\/2026-12-planting-guide\.pdf"/);
+  assert.match(archive, /Free download: December planting guide \(PDF\)/);
+  assert.match(archive, /href="\/guides\/2026-12-planting-guide\.pdf"/);
+  assert.match(welcome, /December planting guide \(PDF\)/);
+  assert.match(welcome, /https:\/\/shaleygardens\.com\/guides\/2026-12-planting-guide\.pdf/);
+  assert.equal(/2026-11-planting-guide\.pdf/.test(welcome), false);
+  assert.match(historical, /Free download: November planting guide \(PDF\)/);
+  assert.match(historical, /href="\/guides\/2026-11-planting-guide\.pdf"/);
+  assert.equal(/2026-12-planting-guide\.pdf/.test(historical), false);
   assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
   assert.equal((pdfText.match(/\/Type\s*\/Page(?!s)/g) || []).length, 1);
   assert.match(pdfText, /\/MediaBox\s*\[\s*0\s+0\s+612\s+792\s*\]/);

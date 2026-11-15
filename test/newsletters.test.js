@@ -94,8 +94,13 @@ test('the public archive lists the sent November issue and reuses the home sign-
 
   const archive = fs.readFileSync(path.join(root, 'newsletters/index.html'), 'utf8');
   const issue = fs.readFileSync(path.join(root, 'newsletters/2026-11-november/index.html'), 'utf8');
+  const historicalIssue = renderIssuePage(issues[0])
+    .replaceAll('/guides/2026-12-planting-guide.pdf', '/guides/2026-11-planting-guide.pdf')
+    .replaceAll('Free download: December planting guide (PDF)', 'Free download: November planting guide (PDF)');
   assert.equal(archive, renderArchivePage(issues));
-  assert.equal(issue, renderIssuePage(issues[0]));
+  assert.equal(issue, historicalIssue);
+  assert.match(issue, /Free download: November planting guide \(PDF\)/);
+  assert.equal(issue.includes('2026-12-planting-guide.pdf'), false);
   assert.match(archive, /The newest issue is first/);
   assert.match(archive, /href="\/newsletters\/2026-11-november"/);
   assert.match(archive, /November 2026/);
@@ -117,7 +122,7 @@ test('the public archive lists the sent November issue and reuses the home sign-
   assert.equal((home.match(/id="signupForm"/g) || []).length, 1);
   assert.match(home, /Free monthly Central Florida garden tips/);
   assert.match(archive, new RegExp(signup.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.match(issue, new RegExp(signup.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(issue, /id="signupForm"/);
   assert.match(fs.readFileSync(path.join(root, 'js/signup.js'), 'utf8'), /\/api\/subscribe/);
 
   const pages = [
