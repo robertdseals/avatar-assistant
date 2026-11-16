@@ -83,7 +83,8 @@ This section is not an issue.
   assert.match(november, /id="signupForm"/);
   assert.match(november, /src="\/js\/signup\.js"/);
   assert.match(november, /src="\/js\/site-alert\.js"/);
-  assert.equal((november.match(/<script/gi) || []).length, 2);
+  assert.match(november, /src="\/_vercel\/insights\/script\.js"/);
+  assert.equal((november.match(/<script/gi) || []).length, 4);
   assert.equal(/api\/send-newsletter|ADMIN_SEND_TOKEN|RESEND_API_KEY|KV_REST/.test(combined), false);
 });
 
@@ -114,8 +115,9 @@ test('the public archive lists the sent November issue and reuses the home sign-
   assert.match(issue, /All newsletters/);
   assert.equal(/draft only/i.test(issue), false);
   assert.equal(/nothing in this draft has been sent/i.test(issue), false);
-  assert.equal(/<script/gi.test(issue) && (issue.match(/<script/gi) || []).length === 2, true);
+  assert.equal(/<script/gi.test(issue) && (issue.match(/<script/gi) || []).length === 4, true);
   assert.match(issue, /src="\/js\/site-alert\.js"/);
+  assert.match(issue, /src="\/_vercel\/insights\/script\.js"/);
 
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const signup = home.match(/<section class="signup"[\s\S]*?<\/section>/)[0];
