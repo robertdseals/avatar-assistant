@@ -15,7 +15,7 @@ test('the page is branded as Shaley Gardens and built for phones', () => {
   assert.match(html, /history/);
   assert.match(html, /\/api\/speak/);
   assert.match(html, /Your friendly garden helper for Ocala and Central Florida/);
-  assert.match(html, /What can I plant in November\?/);
+  assert.match(html, /What can I plant this month in Central Florida\?/);
   assert.match(html, /How do I protect plants from a freeze\?/);
   assert.match(html, /What grass grows best in sandy soil\?/);
   assert.match(html, /How do I get rid of fire ants safely\?/);
